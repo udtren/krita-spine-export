@@ -1,6 +1,5 @@
 ﻿import json
 import os
-from typing import Dict, List, Optional, Tuple
 
 try:
     from PyQt5.QtCore import QRect
@@ -46,7 +45,9 @@ def document_export_name(document):
         raise SpineExportError("Save the Krita document before exporting to Spine.")
     name = clean_node_name(os.path.splitext(os.path.basename(filename))[0])
     if not name:
-        raise SpineExportError("The Krita document file name is not a valid export name.")
+        raise SpineExportError(
+            "The Krita document file name is not a valid export name."
+        )
     return name, name
 
 
@@ -58,13 +59,13 @@ class SpineExporter:
     def __init__(self, document, settings: ExportSettings):
         self.document = document
         self.settings = settings
-        self.layers: List[LayerInfo] = []
-        self.root_marker: Optional[LayerInfo] = None
-        self.root_origin: Tuple[float, float] = (0.0, 0.0)
-        self.bones: Dict[str, BoneInfo] = {"root": BoneInfo("root")}
-        self.slots: Dict[str, SlotInfo] = {}
-        self.skin_order: List[str] = []
-        self.errors: List[str] = []
+        self.layers: list[LayerInfo] = []
+        self.root_marker: LayerInfo | None = None
+        self.root_origin: tuple[float, float] = (0.0, 0.0)
+        self.bones: dict[str, BoneInfo] = {"root": BoneInfo("root")}
+        self.slots: dict[str, SlotInfo] = {}
+        self.skin_order: list[str] = []
+        self.errors: list[str] = []
 
     def export(self) -> ExportResult:
         if (
@@ -122,7 +123,7 @@ class SpineExporter:
         for node in root.childNodes():
             self._walk_root_marker(node, [])
 
-    def _walk_root_marker(self, node, parents: List[object]):
+    def _walk_root_marker(self, node, parents: list[object]):
         if self._should_ignore_hidden(node):
             return
         name = node.name()
@@ -149,7 +150,7 @@ class SpineExporter:
     def _should_ignore_hidden(self, node):
         return self.settings.ignore_hidden_layers and not node.visible()
 
-    def _walk_node(self, node, parents: List[object]):
+    def _walk_node(self, node, parents: list[object]):
         name = node.name()
         node_type = node.type()
         if self._should_ignore_hidden(node):
@@ -198,7 +199,7 @@ class SpineExporter:
                 )
             )
 
-    def _set_root_marker(self, node, parents: List[object], name: str):
+    def _set_root_marker(self, node, parents: list[object], name: str):
         if self.root_marker is not None:
             raise SpineExportError(
                 "Multiple _root_ marker layers found: {0} and {1}".format(
@@ -220,9 +221,7 @@ class SpineExporter:
         rect = self.root_marker.node.bounds()
         if rect is None or rect.width() <= 0 or rect.height() <= 0:
             raise SpineExportError(
-                "Root marker layer has no visible pixels: {0}".format(
-                    layer_path(self.root_marker)
-                )
+                f"Root marker layer has no visible pixels: {layer_path(self.root_marker)}"
             )
         center_x = rect.x() + rect.width() / 2.0
         center_y = rect.y() + rect.height() / 2.0
@@ -243,9 +242,7 @@ class SpineExporter:
             clean = clean[:-4] if clean.lower().endswith(".png") else clean
             if not clean:
                 raise SpineExportError(
-                    "Layer name is empty after removing tags: {0}".format(
-                        layer_path(layer)
-                    )
+                    f"Layer name is empty after removing tags: {layer_path(layer)}"
                 )
 
             export_name = clean
@@ -293,7 +290,7 @@ class SpineExporter:
                 or layer.rect.height() <= 0
             ):
                 raise SpineExportError(
-                    "Layer has no visible pixels: {0}".format(layer_path(layer))
+                    f"Layer has no visible pixels: {layer_path(layer)}"
                 )
 
             w = layer.rect.width() + self.settings.padding * 2
@@ -350,11 +347,7 @@ class SpineExporter:
             key = (layer.skin_name, layer.slot_name, layer.placeholder_name)
             if key in seen:
                 raise SpineExportError(
-                    "Duplicate attachment placeholder '{0}' in skin '{1}', slot '{2}'.".format(
-                        layer.placeholder_name,
-                        layer.skin_name,
-                        layer.slot_name,
-                    )
+                    f"Duplicate attachment placeholder '{layer.placeholder_name}' in skin '{layer.skin_name}', slot '{layer.slot_name}'."
                 )
             seen.add(key)
 

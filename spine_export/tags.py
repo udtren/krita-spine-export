@@ -1,5 +1,4 @@
 import re
-from typing import List, Optional
 
 from .models import LayerInfo, SpineExportError
 
@@ -46,7 +45,7 @@ def has_tag(node, tag: str):
 def tag_value(
     node,
     tag: str,
-    include_parents: Optional[List[object]] = None,
+    include_parents: list[object] | None = None,
     allow_empty: bool = False,
 ):
     nodes = list(include_parents or []) + [node]
@@ -70,27 +69,27 @@ def float_tag(layer: LayerInfo, tag: str, default: float, path: str):
     try:
         return float(value)
     except ValueError:
-        raise SpineExportError("Invalid [{0}:{1}] on {2}".format(tag, value, path))
+        raise SpineExportError(f"Invalid [{tag}:{value}] on {path}")
 
 
 def strip_tags(name: str):
     return _TAG_RE.sub("", name or "").strip()
 
 
-def apply_name_patterns(name: str, parents: List[object]):
+def apply_name_patterns(name: str, parents: list[object]):
     result = name
     for parent in parents:
         pattern = tag_value(parent, "name", allow_empty=False)
         if pattern:
             if "*" not in pattern:
                 raise SpineExportError(
-                    "[name:pattern] must contain '*': {0}".format(parent.name())
+                    f"[name:pattern] must contain '*': {parent.name()}"
                 )
             result = pattern.replace("*", result)
     return result
 
 
-def folder_path(nodes: List[object]):
+def folder_path(nodes: list[object]):
     parts = []
     for node in nodes:
         folder = direct_tag_value(node, "folder")
@@ -105,7 +104,7 @@ def folder_path(nodes: List[object]):
     return "/".join(part for part in parts if part) + ("/" if parts else "")
 
 
-def skin_name(nodes: List[object]):
+def skin_name(nodes: list[object]):
     skin = "default"
     for node in nodes:
         value = direct_tag_value(node, "skin")
@@ -114,7 +113,7 @@ def skin_name(nodes: List[object]):
     return skin or "default"
 
 
-def bone_name(nodes: List[object]):
+def bone_name(nodes: list[object]):
     bone = "root"
     for node in nodes:
         value = direct_tag_value(node, "bone")
@@ -123,7 +122,7 @@ def bone_name(nodes: List[object]):
     return bone or "root"
 
 
-def parent_bone_name(parents: List[object]):
+def parent_bone_name(parents: list[object]):
     if not parents:
         return "root"
     return bone_name(parents[:-1])
