@@ -48,7 +48,7 @@ spine_export/
   `LayerInfo`, `BoneInfo`, and `SlotInfo`, plus `SpineExportError`.
 - `tags.py` owns layer/group name tag parsing and name derivation. This includes
   `[folder]`, `[skin]`, `[bone]`, `[slot]`, `[path]`, `[scale]`, `[trim]`,
-  `[name]`.
+  `[name]`, and the parent-prefixed attachment name rule.
 - A non-group layer named `_root_` anywhere in the document is reserved as a
   non-exported origin marker. Its visible center becomes Spine `0,0` for
   attachment and bone positions.

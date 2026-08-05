@@ -24,6 +24,7 @@ from .tags import (
     has_tag,
     layer_path,
     parent_bone_name,
+    parent_prefixed_name,
     skin_name,
     strip_tags,
     tag_value,
@@ -245,7 +246,7 @@ class SpineExporter:
                     f"Layer name is empty after removing tags: {layer_path(layer)}"
                 )
 
-            export_name = clean
+            export_name = parent_prefixed_name(clean, layer.parent_chain)
             folders = folder_path(layer.parent_chain + [layer.node])
             path_tag = tag_value(layer.node, "path", include_parents=layer.parent_chain)
             layer.attachment_name = (
