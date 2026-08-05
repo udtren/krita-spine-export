@@ -89,7 +89,7 @@ class SpineExportDialog(QDialog):
         self.write_template = QCheckBox("Write template image")
         self.write_template.setChecked(False)
         self.legacy_json = QCheckBox("Legacy Spine skin JSON")
-        self.legacy_json.setChecked(True)
+        self.legacy_json.setChecked(False)
 
         for widget in (
             self.trim_whitespace,
@@ -159,7 +159,7 @@ class SpineExportDialog(QDialog):
             return
         except Exception as exc:
             QMessageBox.critical(
-                self, "Spine export failed", "Unexpected error: {0}".format(exc)
+                self, "Spine export failed", f"Unexpected error: {exc}"
             )
             return
 
