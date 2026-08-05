@@ -90,15 +90,6 @@ def apply_name_patterns(name: str, parents: List[object]):
     return result
 
 
-def parent_prefixed_name(name: str, parents: List[object]):
-    if name.startswith("/") or not parents:
-        return name
-    parent_name = strip_tags(parents[-1].name())
-    if not parent_name:
-        return name
-    return parent_name + "_" + name
-
-
 def folder_path(nodes: List[object]):
     parts = []
     for node in nodes:

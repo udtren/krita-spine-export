@@ -18,7 +18,7 @@ All exportable layers under the document root are exported, **both visible and h
 
 The exporter writes:
 
-- PNG files for exportable layers and `[merge]` groups. By default, each image and attachment name is prefixed with its immediate parent group name, for example `front_head.png`.
+- PNG files for exportable layers and `[merge]` groups.
 - Spine JSON with `bones`, `slots`, `skins`, and an empty animation.
 - Optional `template.png` from the current document projection.
 
