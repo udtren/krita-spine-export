@@ -50,23 +50,29 @@ def png_config():
     return config
 
 
-def _write_qimage_png(node, filename: str, rect: QRect, size: Tuple[int, int]) -> bool:
+def node_qimage(node, rect: QRect):
     if node.colorModel() != "RGBA" or node.colorDepth() != "U8":
-        return False
+        return None
     raw = bytes(
         node.projectionPixelData(rect.x(), rect.y(), rect.width(), rect.height())
     )
     expected = rect.width() * rect.height() * 4
     if len(raw) < expected:
-        return False
+        return None
     rgba = bytearray(expected)
     rgba[0::4] = raw[2::4]
     rgba[1::4] = raw[1::4]
     rgba[2::4] = raw[0::4]
     rgba[3::4] = raw[3::4]
-    image = QImage(
+    return QImage(
         bytes(rgba), rect.width(), rect.height(), _qimage_format_rgba8888()
     ).copy()
+
+
+def _write_qimage_png(node, filename: str, rect: QRect, size: Tuple[int, int]) -> bool:
+    image = node_qimage(node, rect)
+    if image is None:
+        return False
     if size != (rect.width(), rect.height()):
         image = image.scaled(
             size[0], size[1], _qt_ignore_aspect_ratio(), _qt_smooth_transformation()
