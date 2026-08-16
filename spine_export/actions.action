@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ActionCollection version="2" name="Scripts">
+    <Actions category="Scripts">
+        <text>Spine Export</text>
+
+        <Action name="spine_export">
+            <icon></icon>
+            <text>Export to Spine...</text>
+            <iconText></iconText>
+            <activationFlags>1</activationFlags>
+            <activationConditions>0</activationConditions>
+            <shortcut></shortcut>
+            <isCheckable>false</isCheckable>
+            <statusTip></statusTip>
+        </Action>
+
+        <Action name="spine_export_show_preview_thumbnail">
+            <icon></icon>
+            <text>show preview thumbnail</text>
+            <iconText></iconText>
+            <activationFlags>1</activationFlags>
+            <activationConditions>0</activationConditions>
+            <shortcut></shortcut>
+            <isCheckable>false</isCheckable>
+            <statusTip></statusTip>
+        </Action>
+
+        <Action name="spine_export_show_settings">
+            <icon></icon>
+            <text>show spine export settings</text>
+            <iconText></iconText>
+            <activationFlags>0</activationFlags>
+            <activationConditions>0</activationConditions>
+            <shortcut></shortcut>
+            <isCheckable>false</isCheckable>
+            <statusTip></statusTip>
+        </Action>
+
+    </Actions>
+</ActionCollection>

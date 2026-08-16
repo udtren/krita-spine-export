@@ -5,6 +5,19 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **show preview thumbnail** action under Tools > Scripts, opening a grid window
+  of thumbnails for every group layer whose name starts with one of the
+  configured prefixes (`[skin` by default).
+- **show spine export settings** action under Tools > Scripts, with a **Layer
+  Prefixes** tab for editing the list of matched name prefixes (add, remove,
+  reorder) and a **Display** tab for the preview grid column count, thumbnail
+  size, and the preview window's initial width and height.
+- Preview settings are persisted to `krita/spine_export/preview.json`, resolved
+  relative to the installed plugin folder.
+
 ## [1.0.1] - 2026-07-18
 
 ### Changed
