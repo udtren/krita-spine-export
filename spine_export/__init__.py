@@ -1,9 +1,9 @@
 from krita import Krita, Extension
 
 try:
+    from PyQt6.QtWidgets import QMessageBox
+except ImportError:
     from PyQt5.QtWidgets import QMessageBox
-except ImportError:  # Krita 6 may expose PySide6 in some builds.
-    from PySide6.QtWidgets import QMessageBox
 
 from .dialog import SpineExportDialog
 from .preview_dialog import SpinePreviewDialog
@@ -49,7 +49,7 @@ class KritaSpineExtension(Extension):
             )
             return
         dialog = SpineExportDialog(document, app.activeWindow().qwindow())
-        dialog.exec_()
+        dialog.exec()
 
     def _show_preview_thumbnail(self):
         app = Krita.instance()
@@ -72,7 +72,7 @@ class KritaSpineExtension(Extension):
     def _show_settings_dialog(self):
         app = Krita.instance()
         dialog = SpineSettingsDialog(app.activeWindow().qwindow())
-        if dialog.exec_() and self._preview_dialog is not None:
+        if dialog.exec() and self._preview_dialog is not None:
             if self._preview_dialog.isVisible():
                 self._preview_dialog.reload()
 

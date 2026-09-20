@@ -6,11 +6,11 @@ from krita import InfoObject
 from .models import ExportSettings, LayerInfo, SpineExportError
 
 try:
+    from PyQt6.QtCore import QRect, Qt
+    from PyQt6.QtGui import QImage
+except ImportError:
     from PyQt5.QtCore import QRect, Qt
     from PyQt5.QtGui import QImage
-except ImportError:
-    from PySide6.QtCore import QRect, Qt
-    from PySide6.QtGui import QImage
 
 
 def write_layer_png(document, settings: ExportSettings, layer: LayerInfo):

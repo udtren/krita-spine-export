@@ -2,9 +2,9 @@
 import os
 
 try:
-    from PyQt5.QtCore import QRect
+    from PyQt6.QtCore import QRect
 except ImportError:
-    from PySide6.QtCore import QRect
+    from PyQt5.QtCore import QRect
 
 from .image_writer import write_layer_png, write_template_png
 from .models import (
