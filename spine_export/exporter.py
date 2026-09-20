@@ -6,7 +6,12 @@ try:
 except ImportError:
     from PyQt5.QtCore import QRect
 
-from .image_writer import write_layer_png, write_template_png
+from .image_writer import (
+    node_has_layer_style,
+    render_styled_node,
+    write_layer_png,
+    write_template_png,
+)
 from .models import (
     BoneInfo,
     ExportResult,
@@ -283,7 +288,13 @@ class SpineExporter:
                 layer.node, "mesh", include_parents=layer.parent_chain, allow_empty=True
             )
             layer.blend = self._blend(layer.node)
-            layer.rect = self._export_rect(layer)
+            if node_has_layer_style(layer.node):
+                layer.rendered_image, layer.rendered_rect = render_styled_node(
+                    self.document, layer.node
+                )
+            else:
+                layer.rendered_rect = None
+            layer.rect = self._export_rect(layer, layer.rendered_rect)
 
             if (
                 layer.rect is None
@@ -469,7 +480,7 @@ class SpineExporter:
                 )
         return data
 
-    def _export_rect(self, layer: LayerInfo):
+    def _export_rect(self, layer: LayerInfo, styled_rect=None):
         trim_value = tag_value(
             layer.node, "trim", include_parents=layer.parent_chain, allow_empty=True
         )
@@ -479,7 +490,7 @@ class SpineExporter:
             else trim_value.lower() != "false"
         )
         if trim:
-            return layer.node.bounds()
+            return styled_rect if styled_rect is not None else layer.node.bounds()
         return QRect(0, 0, self.document.width(), self.document.height())
 
     def _has_exportable_projection(self, node):

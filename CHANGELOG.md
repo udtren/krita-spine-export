@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Load the Qt 6 binding used by Krita 6 instead of falling through to an
   unavailable PySide6 import. Krita 5 remains supported through PyQt5.
+- Include enabled Krita layer styles in exported layer and `[merge]` group PNGs,
+  and use the styled projection bounds for Spine attachment geometry.
 
 ### Added
 - **show preview thumbnail** action under Tools > Scripts, opening a grid window
