@@ -1,7 +1,7 @@
 try:
-    from PyQt5.QtCore import QRect, Qt
-    from PyQt5.QtGui import QPixmap
-    from PyQt5.QtWidgets import (
+    from PyQt6.QtCore import QRect, Qt
+    from PyQt6.QtGui import QPixmap
+    from PyQt6.QtWidgets import (
         QDialog,
         QFrame,
         QGridLayout,
@@ -12,10 +12,10 @@ try:
         QVBoxLayout,
         QWidget,
     )
-except ImportError:  # Krita 6 may expose PySide6 in some builds.
-    from PySide6.QtCore import QRect, Qt
-    from PySide6.QtGui import QPixmap
-    from PySide6.QtWidgets import (
+except ImportError:
+    from PyQt5.QtCore import QRect, Qt
+    from PyQt5.QtGui import QPixmap
+    from PyQt5.QtWidgets import (
         QDialog,
         QFrame,
         QGridLayout,

@@ -16,7 +16,7 @@ README.md                # User-facing documentation
 CHANGELOG.md             # Release history
 spine_export/
     __init__.py          # Extension entry point; registers the Tools menu action
-    dialog.py            # Qt export dialog (PyQt5/PySide6)
+    dialog.py            # Qt export dialog (PyQt6/PyQt5)
     exporter.py          # Export orchestration, layer collection/preparation, JSON output
     models.py            # Shared dataclasses and SpineExportError
     tags.py              # Layer/group tag parsing and naming helpers
@@ -26,11 +26,11 @@ spine_export/
 ## Runtime & Environment
 
 - The plugin runs **inside Krita's embedded Python interpreter**, not standalone.
-- Imports such as `krita`, `PyQt5`, and `PySide6` are only resolvable at runtime
+- Imports such as `krita`, `PyQt6`, and `PyQt5` are only resolvable at runtime
   inside Krita. Editor/lint "import could not be resolved" warnings for these are
   expected and should be ignored.
-- Qt is imported with a `PyQt5` first, `PySide6` fallback pattern to support
-  different Krita builds. Preserve this pattern when adding Qt imports.
+- Qt is imported with a `PyQt6` first, `PyQt5` fallback pattern to support
+  Krita 6 and Krita 5. Preserve this pattern when adding Qt imports.
 
 ## Architecture Notes
 

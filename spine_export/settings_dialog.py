@@ -1,5 +1,5 @@
 try:
-    from PyQt5.QtWidgets import (
+    from PyQt6.QtWidgets import (
         QAbstractItemView,
         QDialog,
         QFormLayout,
@@ -15,8 +15,8 @@ try:
         QVBoxLayout,
         QWidget,
     )
-except ImportError:  # Krita 6 may expose PySide6 in some builds.
-    from PySide6.QtWidgets import (
+except ImportError:
+    from PyQt5.QtWidgets import (
         QAbstractItemView,
         QDialog,
         QFormLayout,
