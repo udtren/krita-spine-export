@@ -46,6 +46,8 @@ class LayerInfo:
     spine_xy: Tuple[float, float] = (0.0, 0.0)
     blend: Optional[str] = None
     visible: bool = True
+    rendered_image: Optional[object] = None
+    rendered_rect: Optional[object] = None
 
 
 @dataclass
