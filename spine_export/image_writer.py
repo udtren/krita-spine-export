@@ -1,4 +1,5 @@
 import os
+import struct
 import tempfile
 from typing import Tuple
 
@@ -67,22 +68,75 @@ def png_config():
 
 
 def node_qimage(node, rect: QRect):
-    if node.colorModel() != "RGBA" or node.colorDepth() != "U8":
+    if node.colorModel() != "RGBA":
+        return None
+    depth = node.colorDepth()
+    if depth != "U8" and (
+        depth not in _DEEP_CHANNEL_FORMATS or not _is_srgb_profile(node.colorProfile())
+    ):
         return None
     raw = bytes(
         node.projectionPixelData(rect.x(), rect.y(), rect.width(), rect.height())
     )
     expected = rect.width() * rect.height() * 4
-    if len(raw) < expected:
-        return None
-    rgba = bytearray(expected)
-    rgba[0::4] = raw[2::4]
-    rgba[1::4] = raw[1::4]
-    rgba[2::4] = raw[0::4]
-    rgba[3::4] = raw[3::4]
+    if depth == "U8":
+        if len(raw) < expected:
+            return None
+        rgba = bytearray(expected)
+        rgba[0::4] = raw[2::4]
+        rgba[1::4] = raw[1::4]
+        rgba[2::4] = raw[0::4]
+        rgba[3::4] = raw[3::4]
+    else:
+        rgba = _deep_to_rgba8(raw, depth, expected)
+        if rgba is None:
+            return None
     return QImage(
         bytes(rgba), rect.width(), rect.height(), _qimage_format_rgba8888()
     ).copy()
+
+
+# Struct format and channel byte order of deeper RGBA depths: integer depths
+# are stored BGRA like U8, float depths RGBA.
+_DEEP_CHANNEL_FORMATS = {
+    "U16": ("H", True),
+    "F16": ("e", False),
+    "F32": ("f", False),
+}
+
+
+def _is_srgb_profile(profile: str) -> bool:
+    # Same test as Krita's PNG export: sRGB-encoded values, not linear (g10).
+    name = (profile or "").lower()
+    return "srgb" in name and "g10" not in name
+
+
+def _deep_to_rgba8(raw: bytes, depth: str, expected: int):
+    """Convert U16/F16/F32 pixel data to 8-bit RGBA without Node.save().
+
+    Node.save() builds a temporary document and image stroke for every layer,
+    which is slow and has crashed Solstice with the GPU engine.
+    """
+    fmt, bgr = _DEEP_CHANNEL_FORMATS[depth]
+    size = struct.calcsize(fmt)
+    if len(raw) < expected * size:
+        return None
+    values = struct.unpack("<{0}{1}".format(expected, fmt), raw[: expected * size])
+    if fmt == "H":
+        channels = bytes((v * 255 + 32767) // 65535 for v in values)
+    else:
+        channels = bytes(
+            0 if not v > 0.0 else 255 if v >= 1.0 else int(v * 255.0 + 0.5)
+            for v in values
+        )
+    if not bgr:
+        return bytearray(channels)
+    rgba = bytearray(expected)
+    rgba[0::4] = channels[2::4]
+    rgba[1::4] = channels[1::4]
+    rgba[2::4] = channels[0::4]
+    rgba[3::4] = channels[3::4]
+    return rgba
 
 
 def node_has_layer_style(node) -> bool:

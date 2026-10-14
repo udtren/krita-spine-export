@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   "Could not write PNG": `Node.save()` returns `None` in Krita's Python API, so
   only a missing file counts as a failure. These layer exports no longer show
   the PNG options dialog for every image.
+- Write layers of RGBA 16-bit integer, 16-bit float and 32-bit float documents
+  with an sRGB profile directly as 8-bit PNGs, as for 8-bit documents, instead
+  of through `Node.save()`. This is much faster and avoids an intermittent
+  crash in Solstice with the GPU engine. Other profiles still use
+  `Node.save()`.
 
 ### Added
 - **show preview thumbnail** action under Tools > Scripts, opening a grid window
