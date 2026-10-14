@@ -2,7 +2,7 @@ import os
 import tempfile
 from typing import Tuple
 
-from krita import InfoObject
+from krita import InfoObject, Krita
 
 from .models import ExportSettings, LayerInfo, SpineExportError
 
@@ -39,7 +39,11 @@ def write_layer_png(document, settings: ExportSettings, layer: LayerInfo):
     if _write_qimage_png(layer.node, filename, rect, layer.exported_size):
         return
     export_config = png_config()
-    if not layer.node.save(filename, 72, 72, export_config, rect):
+    if os.path.exists(filename):
+        os.remove(filename)
+    saved = _save_node(layer.node, filename, export_config, rect)
+    # Krita binds Node.save() as void, so Python gets None; check the file.
+    if saved is False or not os.path.exists(filename):
         raise SpineExportError("Could not write PNG: {0}".format(filename))
 
 
@@ -119,7 +123,9 @@ def render_styled_node(document, node):
         if image is None:
             handle, temp_path = tempfile.mkstemp(suffix=".png")
             os.close(handle)
-            if not flattened_node.save(temp_path, 72, 72, png_config(), rect):
+            # Node.save() returns None (void binding); the isNull() check
+            # below catches a failed write of the empty temporary file.
+            if _save_node(flattened_node, temp_path, png_config(), rect) is False:
                 raise SpineExportError("Could not render a styled layer projection.")
             image = QImage(temp_path)
             if image.isNull():
@@ -129,6 +135,18 @@ def render_styled_node(document, node):
         if temp_path and os.path.exists(temp_path):
             os.remove(temp_path)
         clone.close()
+
+
+def _save_node(node, filename: str, config, rect: QRect):
+    # Outside batch mode Krita shows the PNG options dialog for every
+    # Node.save(); the plugin already passes the configuration.
+    app = Krita.instance()
+    batch = app.batchmode()
+    app.setBatchmode(True)
+    try:
+        return node.save(filename, 72, 72, config, rect)
+    finally:
+        app.setBatchmode(batch)
 
 
 def _write_qimage_png(node, filename: str, rect: QRect, size: Tuple[int, int]) -> bool:

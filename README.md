@@ -31,6 +31,10 @@ lists every group layer whose name starts with one of the configured prefixes
 (`[skin` by default). Groups are searched recursively, skipping root-level nodes
 whose names start with `_`, and prefix matching is case-insensitive. Each entry
 shows a thumbnail of the group, its name with tags stripped, and its raw name.
+When a matched group contains a `[slot: ...head]` group with multiple image
+children, the window generates one preview per child, showing only that head
+image while preserving the rest of the matched group's visible composition.
+Preview labels are placed directly beneath the rendered thumbnail.
 Press **Refresh** after editing layers to regenerate the thumbnails.
 
 

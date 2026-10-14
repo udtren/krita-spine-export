@@ -12,11 +12,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   unavailable PySide6 import. Krita 5 remains supported through PyQt5.
 - Include enabled Krita layer styles in exported layer and `[merge]` group PNGs,
   and use the styled projection bounds for Spine attachment geometry.
+- Remove the unused vertical gap between skin preview thumbnails and their
+  information labels.
+- Export PNGs of non-8-bit documents (such as 32-bit float) without reporting
+  "Could not write PNG": `Node.save()` returns `None` in Krita's Python API, so
+  only a missing file counts as a failure. These layer exports no longer show
+  the PNG options dialog for every image.
 
 ### Added
 - **show preview thumbnail** action under Tools > Scripts, opening a grid window
   of thumbnails for every group layer whose name starts with one of the
   configured prefixes (`[skin` by default).
+- Skin preview groups containing a `[slot: ...head]` group with multiple image
+  children now produce a separate thumbnail for each head image.
 - **show spine export settings** action under Tools > Scripts, with a **Layer
   Prefixes** tab for editing the list of matched name prefixes (add, remove,
   reorder) and a **Display** tab for the preview grid column count, thumbnail
