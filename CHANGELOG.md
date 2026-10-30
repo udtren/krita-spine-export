@@ -23,6 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   of through `Node.save()`. This is much faster and avoids an intermittent
   crash in Solstice with the GPU engine. Other profiles still use
   `Node.save()`.
+- Write `template.png` in batch mode. It no longer shows the PNG options dialog
+  or replaces the options remembered by File > Export, which turned
+  "Force convert to sRGB" off for later exports.
 
 ### Added
 - **show preview thumbnail** action under Tools > Scripts, opening a grid window
