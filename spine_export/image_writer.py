@@ -52,7 +52,15 @@ def write_template_png(document, settings: ExportSettings):
     base = os.path.dirname(settings.json_path)
     os.makedirs(base, exist_ok=True)
     filename = os.path.join(base, "template.png")
-    if not document.exportImage(filename, png_config()):
+    # Outside batch mode Krita shows the PNG options dialog and remembers this
+    # configuration as the user's File > Export settings.
+    batch = document.batchmode()
+    document.setBatchmode(True)
+    try:
+        exported = document.exportImage(filename, png_config())
+    finally:
+        document.setBatchmode(batch)
+    if not exported:
         raise SpineExportError("Could not write template PNG: {0}".format(filename))
 
 
